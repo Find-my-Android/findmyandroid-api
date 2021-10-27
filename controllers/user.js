@@ -5,16 +5,6 @@ const connection = require("../connection");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-function rowToObject(row) {
-  return {
-    user_id: row.user_id,
-    first_name: row.first_name,
-    last_name: row.last_name,
-    email: row.email,
-    password: row.password,
-  };
-}
-
 /*
   Route: /user/signup
   Create a user in the database
@@ -26,7 +16,7 @@ exports.create = async (req, res) => {
   if (!userExists) {
     //No user exists, so generate insert query
     const query =
-      "INSERT INTO User(first_name, last_name, email, primary, secondary, password) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO user(first_name, last_name, email, primary_num, secondary_num, account_type, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     //Hash the password
     let password = await bcrypt.hash(req.body.password, saltRounds);
@@ -36,8 +26,9 @@ exports.create = async (req, res) => {
       req.body.first_name,
       req.body.last_name,
       req.body.email,
-      req.body.primary,
-      req.body.secondary,
+      req.body.primary_num,
+      req.body.secondary_num,
+      req.body.account_type,
       password,
     ];
 
@@ -87,7 +78,7 @@ exports.login = async (req, res) => {
   }
 
   //Get the user_id
-  const query = "SELECT user_id FROM User WHERE email = ?";
+  const query = "SELECT user_id FROM user WHERE email = ?";
   const params = [email];
 
   let user_id = await new Promise((resolve, reject) => {
@@ -118,7 +109,7 @@ exports.login = async (req, res) => {
 */
 exports.get = async (req, res) => {
   const query =
-    "SELECT user_id, email, first_name, last_name, primary, secondary, type from User WHERE user_id = ?";
+    "SELECT user_id, email, first_name, last_name, primary, secondary, type from user WHERE user_id = ?";
   const params = [req.user.user_id];
 
   connection.query(query, params, (error, results) => {
@@ -134,13 +125,13 @@ exports.get = async (req, res) => {
 
 exports.edit = async (req, res) => {
   const query =
-    "UPDATE User SET first_name = ?, last_name = ?, email = ?, primary = ?, secondary = ? WHERE user_id = ?";
+    "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ? WHERE user_id = ?";
   const params = [
     req.body.first_name,
     req.body.last_name,
     req.body.email,
-    req.body.primary,
-    req.body.secondary,
+    req.body.primary_num,
+    req.body.secondary_num,
     req.user.user_id,
   ];
 
@@ -163,7 +154,7 @@ exports.edit = async (req, res) => {
  */
 function checkIfUserExists(email) {
   //Generate query with prepared statement
-  const query = "SELECT * FROM User WHERE email = ?";
+  const query = "SELECT * FROM user WHERE email = ?";
   const params = [email];
 
   return new Promise((resolve, reject) => {
@@ -185,7 +176,7 @@ function checkIfUserExists(email) {
 }
 
 function getPassword(email, password) {
-  const query = "SELECT password FROM User WHERE email = ?";
+  const query = "SELECT password FROM user WHERE email = ?";
   const params = [email];
 
   return new Promise((resolve, reject) => {

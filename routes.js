@@ -10,15 +10,15 @@ router.patch("/user/edit", authenticateToken, user.edit);
 router.get("/user", authenticateToken, user.get);
 
 //Phone routes
-const budget = require("./controllers/phone");
+const phone = require("./controllers/phone");
 router.delete("/phone/delete", authenticateToken, phone.delete);
 router.patch("/phone/edit", authenticateToken, phone.edit);
 router.get("/phone/:phone_id/all", authenticateToken, phone.allPhones);
 
 //Admin routes
 const admin = require("./controllers/admin");
-router.patch("/admin/user/edit", authenticateToken, admin.editUser);
-router.patch("/admin/phone/edit", authenticateToken, admin.editPhone);
+//router.patch("/admin/user/edit", authenticateToken, admin.editUser);
+//router.patch("/admin/phone/edit", authenticateToken, admin.editPhone);
 router.get("/admin/user/all", authenticateToken, admin.allUsers);
 router.get("/admin/phone/all", authenticateToken, admin.allPhones);
 
