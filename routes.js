@@ -13,7 +13,7 @@ router.get("/user", authenticateToken, user.get);
 const phone = require("./controllers/phone");
 router.delete("/phone/delete", authenticateToken, phone.delete);
 router.patch("/phone/edit", authenticateToken, phone.edit);
-router.get("/phone/:phone_id/all", authenticateToken, phone.allPhones);
+router.get("/phone/:user_id/all", authenticateToken, phone.allPhones);
 
 //Admin routes
 const admin = require("./controllers/admin");

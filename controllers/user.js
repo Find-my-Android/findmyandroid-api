@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-require("dotenv").config();
 const connection = require("../connection");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const secretJwt = JSON.parse(fs.readFileSync("jwt.json", "utf8")).jwt;
 
 /*
   Route: /user/signup
@@ -109,7 +109,7 @@ exports.login = async (req, res) => {
 */
 exports.get = async (req, res) => {
   const query =
-    "SELECT user_id, email, first_name, last_name, primary, secondary, type from user WHERE user_id = ?";
+    "SELECT user_id, email, first_name, last_name, primary_num, secondary_num, account_type from user WHERE user_id = ?";
   const params = [req.user.user_id];
 
   connection.query(query, params, (error, results) => {
@@ -194,5 +194,5 @@ function getPassword(email, password) {
 }
 
 function generateJWT(user) {
-  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "3600s" });
+  return jwt.sign(user, secretJwt, { expiresIn: "3600s" });
 }

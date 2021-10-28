@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-require("dotenv").config();
+const secretJwt = JSON.parse(fs.readFileSync("jwt.json", "utf8")).jwt;
 
 /**
  * This is a middleware function that should be added on all protected routes
@@ -23,7 +23,7 @@ function authenticateToken(req, res, next) {
   }
 
   // Verify the JWT token
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, secretJwt, (err, user) => {
     if (err) {
       console.log(err);
       return res.sendStatus(403);
