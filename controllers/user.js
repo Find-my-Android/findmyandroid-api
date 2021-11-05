@@ -125,13 +125,14 @@ exports.get = async (req, res) => {
 
 exports.edit = async (req, res) => {
   const query =
-    "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ? WHERE user_id = ?";
+    "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ?, account_type = ? WHERE user_id = ?";
   const params = [
     req.body.first_name,
     req.body.last_name,
     req.body.email,
     req.body.primary_num,
     req.body.secondary_num,
+    req.body.account_type,
     req.user.user_id,
   ];
 
