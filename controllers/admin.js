@@ -24,7 +24,7 @@ exports.allUsers = async (req, res) => {
   Route: /admin/user/edit
   Edits all user information
 */
-exports.edit = async (req, res) => {
+exports.editUser = async (req, res) => {
   const query =
     "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ?, account_type = ? WHERE user_id = ?";
   const params = [
@@ -34,7 +34,7 @@ exports.edit = async (req, res) => {
     req.body.primary_num,
     req.body.secondary_num,
     req.body.account_type,
-    req.user.user_id,
+    req.body.user_id,
   ];
 
   //Updates User on user_id, withheld changing of password.

@@ -17,7 +17,7 @@ router.get("/phone/:user_id/all", authenticateToken, phone.allPhones);
 
 //Admin routes
 const admin = require("./controllers/admin");
-//router.patch("/admin/user/edit", authenticateToken, admin.editUser);
+router.patch("/admin/user/edit", authenticateToken, admin.editUser);
 //router.patch("/admin/phone/edit", authenticateToken, admin.editPhone);
 router.get("/admin/user/all", authenticateToken, admin.allUsers);
 router.get("/admin/phone/all", authenticateToken, admin.allPhones);

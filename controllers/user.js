@@ -125,18 +125,21 @@ exports.get = async (req, res) => {
 
 exports.edit = async (req, res) => {
   const query =
-    "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ?, account_type = ? WHERE user_id = ?";
+    "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ?, password = ? WHERE user_id = ?";
+
+  let password = await bcrypt.hash(req.body.password, saltRounds);
+
   const params = [
     req.body.first_name,
     req.body.last_name,
     req.body.email,
     req.body.primary_num,
     req.body.secondary_num,
-    req.body.account_type,
     req.user.user_id,
+    password,
   ];
 
-  //Updates User on user_id, withheld changing of password.
+  //Updates User on user_id, with changing of password.
   connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);
