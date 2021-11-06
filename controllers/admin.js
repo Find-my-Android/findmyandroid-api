@@ -5,7 +5,8 @@ const connection = require("../connection");
   Selects all users
 */
 exports.allUsers = async (req, res) => {
-  const query = "SELECT * FROM user";
+  const query =
+    "SELECT user_id, email, first_name, last_name, primary_num, secondary_num, account_type, last_used FROM user";
 
   return new Promise((resolve, reject) => {
     connection.query(query, (error, results) => {

@@ -16,10 +16,12 @@ exports.create = async (req, res) => {
   if (!userExists) {
     //No user exists, so generate insert query
     const query =
-      "INSERT INTO user(first_name, last_name, email, primary_num, secondary_num, account_type, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO user(first_name, last_name, email, primary_num, secondary_num, account_type, last_used, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     //Hash the password
     let password = await bcrypt.hash(req.body.password, saltRounds);
+    let account = 0;
+    let datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
 
     //Params for prepared SQL
     const params = [
@@ -28,7 +30,8 @@ exports.create = async (req, res) => {
       req.body.email,
       req.body.primary_num,
       req.body.secondary_num,
-      req.body.account_type,
+      account,
+      datetime,
       password,
     ];
 
@@ -96,6 +99,21 @@ exports.login = async (req, res) => {
     return res.status(401).send("Couldn't get user_id");
   }
 
+  //Update the last_used date
+  let datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+  await new Promise((resolve, reject) => {
+    const query2 = "UPDATE user SET last_used = ? where user_id = ?";
+    const params2 = [datetime, user_id];
+
+    connection.query(query2, params2, (error, results) => {
+      if (error) {
+        return reject();
+      } else {
+        return resolve(results);
+      }
+    });
+  });
+
   //generate jwt
   let jwt = generateJWT({ user_id: user_id, email: email });
 
@@ -109,7 +127,7 @@ exports.login = async (req, res) => {
 */
 exports.get = async (req, res) => {
   const query =
-    "SELECT user_id, email, first_name, last_name, primary_num, secondary_num, account_type from user WHERE user_id = ?";
+    "SELECT user_id, email, first_name, last_name, primary_num, secondary_num, account_type, last_used from user WHERE user_id = ?";
   const params = [req.user.user_id];
 
   connection.query(query, params, (error, results) => {
