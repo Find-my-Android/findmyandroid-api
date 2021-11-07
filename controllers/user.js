@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
     //Hash the password
     let password = await bcrypt.hash(req.body.password, saltRounds);
     let account = 0;
-    let datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    let datetime = new Date().toISOString();
 
     //Params for prepared SQL
     const params = [
@@ -100,7 +100,7 @@ exports.login = async (req, res) => {
   }
 
   //Update the last_used date
-  let datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+  let datetime = new Date().toISOString();
   await new Promise((resolve, reject) => {
     const query2 = "UPDATE user SET last_used = ? where user_id = ?";
     const params2 = [datetime, user_id];
