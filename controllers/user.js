@@ -16,12 +16,11 @@ exports.create = async (req, res) => {
   if (!userExists) {
     //No user exists, so generate insert query
     const query =
-      "INSERT INTO user(first_name, last_name, email, primary_num, secondary_num, account_type, last_used, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO user(first_name, last_name, email, primary_num, secondary_num, account_type, last_used, password) VALUES (?, ?, ?, ?, ?, ?, now(), ?)";
 
     //Hash the password
     let password = await bcrypt.hash(req.body.password, saltRounds);
     let account = 0;
-    let datetime = new Date().toISOString();
 
     //Params for prepared SQL
     const params = [
@@ -31,7 +30,6 @@ exports.create = async (req, res) => {
       req.body.primary_num,
       req.body.secondary_num,
       account,
-      datetime,
       password,
     ];
 
@@ -100,10 +98,9 @@ exports.login = async (req, res) => {
   }
 
   //Update the last_used date
-  let datetime = new Date().toISOString();
   await new Promise((resolve, reject) => {
-    const query2 = "UPDATE user SET last_used = ? where user_id = ?";
-    const params2 = [datetime, user_id];
+    const query2 = "UPDATE user SET last_used = now() where user_id = ?";
+    const params2 = [user_id];
 
     connection.query(query2, params2, (error, results) => {
       if (error) {
