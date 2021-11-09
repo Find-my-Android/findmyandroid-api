@@ -8,15 +8,21 @@ exports.allUsers = async (req, res) => {
   const query =
     "SELECT user_id, email, first_name, last_name, primary_num, secondary_num, account_type, last_used FROM user";
 
+  let isAdmin = req.user.account_type === 1;
+
   return new Promise((resolve, reject) => {
     connection.query(query, (error, results) => {
       if (error) {
         console.log(error);
       }
-      res.send({
-        ok: true,
-        users: results,
-      });
+      if (isAdmin) {
+        res.send({
+          ok: true,
+          users: results,
+        });
+      } else {
+        res.status(401).send("Needs Elevation!");
+      }
     });
   });
 };
@@ -38,14 +44,20 @@ exports.editUser = async (req, res) => {
     req.body.user_id,
   ];
 
+  let isAdmin = req.user.account_type === 1;
+
   //Updates User on user_id, withheld changing of password.
   connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);
     }
-    res.send({
-      ok: true,
-    });
+    if (isAdmin) {
+      res.send({
+        ok: true,
+      });
+    } else {
+      res.status(401).send("Needs Elevation!");
+    }
   });
 };
 
@@ -56,15 +68,21 @@ exports.editUser = async (req, res) => {
 exports.allPhones = async (req, res) => {
   const query = "SELECT * FROM phone";
 
+  let isAdmin = req.user.account_type === 1;
+
   return new Promise((resolve, reject) => {
     connection.query(query, (error, results) => {
       if (error) {
         console.log(error);
       }
-      res.send({
-        ok: true,
-        phones: results,
-      });
+      if (isAdmin) {
+        res.send({
+          ok: true,
+          phones: results,
+        });
+      } else {
+        res.status(401).send("Needs Elevation!");
+      }
     });
   });
 };

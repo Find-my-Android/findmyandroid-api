@@ -56,6 +56,8 @@ exports.create = async (req, res) => {
 exports.login = async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
+  let source = req.body.source;
+  console.log(source);
 
   // No password or email provided
   if (!email || !password) {
@@ -78,29 +80,29 @@ exports.login = async (req, res) => {
     return res.status(401).send("Incorrect password");
   }
 
-  //Get the user_id
-  const query = "SELECT user_id FROM user WHERE email = ?";
+  //Get the user_id and account_type
+  const query = "SELECT user_id, account_type FROM user WHERE email = ?";
   const params = [email];
 
-  let user_id = await new Promise((resolve, reject) => {
+  let userData = await new Promise((resolve, reject) => {
     //Query the database with the query
     connection.query(query, params, (error, results) => {
       if (results.length == 0) {
         return reject();
       } else {
-        return resolve(results[0].user_id);
+        return resolve(results[0]);
       }
     });
   });
 
-  if (!user_id) {
+  if (!userData.user_id) {
     return res.status(401).send("Couldn't get user_id");
   }
 
   //Update the last_used date
   await new Promise((resolve, reject) => {
     const query2 = "UPDATE user SET last_used = now() where user_id = ?";
-    const params2 = [user_id];
+    const params2 = [userData.user_id];
 
     connection.query(query2, params2, (error, results) => {
       if (error) {
@@ -112,7 +114,14 @@ exports.login = async (req, res) => {
   });
 
   //generate jwt
-  let jwt = generateJWT({ user_id: user_id, email: email });
+  let jwt = generateJWT(
+    {
+      user_id: userData.user_id,
+      email: email,
+      account_type: userData.account_type,
+    },
+    source
+  );
 
   //send the jwt
   res.json({ ok: true, jwt: jwt });
@@ -212,6 +221,11 @@ function getPassword(email, password) {
   });
 }
 
-function generateJWT(user) {
-  return jwt.sign(user, secretJwt, { expiresIn: "3600s" });
+function generateJWT(user, source) {
+  console.log(source);
+  if (source === undefined) {
+    return jwt.sign(user, secretJwt);
+  } else {
+    return jwt.sign(user, secretJwt, { expiresIn: "3600s" });
+  }
 }
