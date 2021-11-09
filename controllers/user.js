@@ -57,7 +57,6 @@ exports.login = async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
   let source = req.body.source;
-  console.log(source);
 
   // No password or email provided
   if (!email || !password) {
@@ -222,7 +221,6 @@ function getPassword(email, password) {
 }
 
 function generateJWT(user, source) {
-  console.log(source);
   if (source === undefined) {
     return jwt.sign(user, secretJwt);
   } else {
