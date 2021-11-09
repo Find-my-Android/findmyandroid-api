@@ -62,6 +62,31 @@ exports.editUser = async (req, res) => {
 };
 
 /*
+  Route: /admin/user/delete
+  Deletes a user
+*/
+exports.delete = async (req, res) => {
+  const query = "DELETE FROM user WHERE user_id = ?";
+  const params = [req.body.user_id];
+
+  let isAdmin = req.user.account_type === 1;
+
+  // Delete MonthlyBudgetCategory linking records
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.log(error);
+    }
+    if (isAdmin) {
+      res.send({
+        ok: true,
+      });
+    } else {
+      res.status(401).send("Needs Elevation!");
+    }
+  });
+};
+
+/*
   Route: /admin/phone/all
   Selects all phones
 */
@@ -84,5 +109,61 @@ exports.allPhones = async (req, res) => {
         res.status(401).send("Needs Elevation!");
       }
     });
+  });
+};
+
+/*
+  Route: /admin/phone/edit
+  Edits phone information
+*/
+exports.editPhone = async (req, res) => {
+  const query =
+    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE imei = ?";
+  const params = [
+    req.body.name,
+    req.body.phone_num,
+    req.body.tracking_state,
+    req.body.stolen_state,
+    req.body.imei,
+  ];
+
+  let isAdmin = req.user.account_type === 1;
+
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.log(error);
+    }
+    if (isAdmin) {
+      res.send({
+        ok: true,
+      });
+    } else {
+      res.status(401).send("Needs Elevation!");
+    }
+  });
+};
+
+/*
+  Route: /admin/phone/delete
+  Deletes a phone for any user
+*/
+exports.delete = async (req, res) => {
+  const query = "DELETE FROM phone WHERE imei = ?";
+  const params = [req.body.imei];
+
+  let isAdmin = req.user.account_type === 1;
+
+  // Delete MonthlyBudgetCategory linking records
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.log(error);
+    }
+    if (isAdmin) {
+      res.send({
+        ok: true,
+      });
+    } else {
+      res.status(401).send("Needs Elevation!");
+    }
   });
 };

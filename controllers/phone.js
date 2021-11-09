@@ -23,11 +23,11 @@ exports.allPhones = async (req, res) => {
 
 /*
   Route: /phone/delete
-  Deletes a phone
+  Deletes a phone for the logged in user
 */
 exports.delete = async (req, res) => {
-  const query = "DELETE phone WHERE imei = ?";
-  const params = [req.body.imei];
+  const query = "DELETE phone WHERE imei = ? AND user_id = ?";
+  const params = [req.body.imei, req.user.user_id];
 
   // Delete MonthlyBudgetCategory linking records
   connection.query(query, params, (error, results) => {
@@ -42,20 +42,21 @@ exports.delete = async (req, res) => {
 
 /*
   Route: /phone/edit
-  Updates the phone with the given information.
+  Edits phone information for the logged in user
 */
-exports.edit = async (req, res) => {
+exports.editPhone = async (req, res) => {
   const query =
-    "UPDATE phone SET latitude = ?, longitude = ?, tracking_state = ?, last_tracked = ?, stolen_state = ? WHERE imei = ?";
+    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE imei = ? and user_id = ?";
   const params = [
-    req.body.latitude,
-    req.body.longitude,
+    req.body.name,
+    req.body.phone_num,
     req.body.tracking_state,
-    req.body.last_tracked,
     req.body.stolen_state,
     req.body.imei,
+    req.user.user_id,
   ];
-  connection.query(query, params, (error, result) => {
+
+  connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);
     }
