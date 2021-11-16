@@ -13,7 +13,9 @@ router.get("/user", authenticateToken, user.get);
 const phone = require("./controllers/phone");
 router.delete("/phone/delete", authenticateToken, phone.delete);
 router.patch("/phone/edit", authenticateToken, phone.edit);
-router.get("/phone/:user_id/all", authenticateToken, phone.allPhones);
+router.patch("phone/track", authenticateToken, phone.trackPhone);
+router.get("/phone/all", authenticateToken, phone.allPhones);
+router.get("/phone/get", authenticateToken, phone.getPhone);
 
 //Admin routes
 const admin = require("./controllers/admin");
@@ -23,5 +25,6 @@ router.patch("/admin/user/edit", authenticateToken, admin.editUser);
 router.patch("/admin/phone/edit", authenticateToken, admin.editPhone);
 router.get("/admin/user/all", authenticateToken, admin.allUsers);
 router.get("/admin/phone/all", authenticateToken, admin.allPhones);
+router.get("/admin/phone/allbyuser", authenticateToken, admin.allPhonesForUser);
 
 module.exports = router;

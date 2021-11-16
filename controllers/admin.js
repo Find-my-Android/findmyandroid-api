@@ -113,6 +113,33 @@ exports.allPhones = async (req, res) => {
 };
 
 /*
+  Route: /admin/phone/allbyuser
+  Selects all phones from a user.
+*/
+exports.allPhonesForUser = async (req, res) => {
+  const query = "SELECT * FROM phone WHERE user_id = ?";
+  const params = [req.params.user_id];
+
+  let isAdmin = req.user.account_type === 1;
+
+  return new Promise((resolve, reject) => {
+    connection.query(query, params, (error, results) => {
+      if (error) {
+        console.log(error);
+      }
+      if (isAdmin) {
+        res.send({
+          ok: true,
+          phones: results,
+        });
+      } else {
+        res.status(401).send("Needs Elevation!");
+      }
+    });
+  });
+};
+
+/*
   Route: /admin/phone/edit
   Edits phone information
 */

@@ -221,7 +221,7 @@ function getPassword(email, password) {
 }
 
 function generateJWT(user, source) {
-  if (source === undefined) {
+  if (source === "android") {
     return jwt.sign(user, secretJwt);
   } else {
     return jwt.sign(user, secretJwt, { expiresIn: "3600s" });
