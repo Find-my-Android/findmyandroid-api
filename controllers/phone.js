@@ -46,7 +46,7 @@ exports.getPhone = async (req, res) => {
   Route: /phone/delete
   Deletes a phone for the logged in user
 */
-exports.delete = async (req, res) => {
+exports.deletePhone = async (req, res) => {
   const query = "DELETE phone WHERE imei = ? AND user_id = ?";
   const params = [req.body.imei, req.user.user_id];
 

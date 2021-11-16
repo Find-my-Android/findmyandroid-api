@@ -65,7 +65,7 @@ exports.editUser = async (req, res) => {
   Route: /admin/user/delete
   Deletes a user
 */
-exports.delete = async (req, res) => {
+exports.deleteUser = async (req, res) => {
   const query = "DELETE FROM user WHERE user_id = ?";
   const params = [req.body.user_id];
 
@@ -174,7 +174,7 @@ exports.editPhone = async (req, res) => {
   Route: /admin/phone/delete
   Deletes a phone for any user
 */
-exports.delete = async (req, res) => {
+exports.deletePhone = async (req, res) => {
   const query = "DELETE FROM phone WHERE imei = ?";
   const params = [req.body.imei];
 
