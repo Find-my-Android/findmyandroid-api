@@ -22,12 +22,12 @@ exports.allPhones = async (req, res) => {
 };
 
 /*
-  Route: /phone/get
+  Route: /phone/get/:imei
   Selects a phone for the logged in user with an IMEI.
 */
 exports.getPhone = async (req, res) => {
   const query = "SELECT * FROM phone WHERE imei = ? and user_id = ?";
-  const params = [req.body.imei, req.user.user_id];
+  const params = [req.params.imei, req.user.user_id];
 
   return new Promise((resolve, reject) => {
     connection.query(query, params, (error, results) => {

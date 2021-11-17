@@ -113,7 +113,7 @@ exports.allPhones = async (req, res) => {
 };
 
 /*
-  Route: /admin/phone/allbyuser
+  Route: /admin/phone/all/:user_id
   Selects all phones from a user.
 */
 exports.allPhonesForUser = async (req, res) => {
