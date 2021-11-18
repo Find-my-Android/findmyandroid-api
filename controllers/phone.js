@@ -110,3 +110,11 @@ exports.trackPhone = async (req, res) => {
     });
   });
 };
+
+/*
+  Route: /phone/create
+  Creates a new phone object with the default settings
+*/
+exports.createPhone = async (req, res) => {
+  const query = "INSERT INTO phone VALUES (?, ?, ?, ?)";
+};
