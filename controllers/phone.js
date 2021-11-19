@@ -115,13 +115,17 @@ exports.trackPhone = async (req, res) => {
   Creates a new phone object with the default settings
 */
 exports.createPhone = async (req, res) => {
-  const query =
-    "INSERT INTO phone (imei, user_id, name, phone_num, last_tracked) VALUES (?, ?, ?, ?, NOW())";
+  const query = "INSERT INTO phone VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
   const params = [
     req.body.imei,
     req.user.user_id,
     req.body.name,
     req.body.phone_num,
+    0,
+    0,
+    0,
+    0,
+    0,
   ];
 
   //Connect to the database and run the query

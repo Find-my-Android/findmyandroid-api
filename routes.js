@@ -11,7 +11,7 @@ router.get("/user", authenticateToken, user.get);
 
 //Phone routes
 const phone = require("./controllers/phone");
-router.post("phone/create", authenticateToken, phone.createPhone);
+router.post("/phone/create", authenticateToken, phone.createPhone);
 router.delete("/phone/delete", authenticateToken, phone.deletePhone);
 router.patch("/phone/edit", authenticateToken, phone.editPhone);
 router.patch("phone/track", authenticateToken, phone.trackPhone);
