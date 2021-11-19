@@ -71,7 +71,6 @@ exports.deleteUser = async (req, res) => {
 
   let isAdmin = req.user.account_type === 1;
 
-  // Delete MonthlyBudgetCategory linking records
   connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);
@@ -180,7 +179,6 @@ exports.deletePhone = async (req, res) => {
 
   let isAdmin = req.user.account_type === 1;
 
-  // Delete MonthlyBudgetCategory linking records
   connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);

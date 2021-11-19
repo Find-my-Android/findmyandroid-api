@@ -50,7 +50,6 @@ exports.deletePhone = async (req, res) => {
   const query = "DELETE phone WHERE imei = ? AND user_id = ?";
   const params = [req.body.imei, req.user.user_id];
 
-  // Delete MonthlyBudgetCategory linking records
   connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);
@@ -116,5 +115,22 @@ exports.trackPhone = async (req, res) => {
   Creates a new phone object with the default settings
 */
 exports.createPhone = async (req, res) => {
-  const query = "INSERT INTO phone VALUES (?, ?, ?, ?)";
+  const query =
+    "INSERT INTO phone (imei, user_id, name, phone_num, last_tracked) VALUES (?, ?, ?, ?, NOW())";
+  const params = [
+    req.body.imei,
+    req.user.user_id,
+    req.body.name,
+    req.body.phone_num,
+  ];
+
+  //Connect to the database and run the query
+  connection.query(query, params, (error, result) => {
+    if (error) {
+      console.log(error);
+    }
+    res.send({
+      ok: true,
+    });
+  });
 };
