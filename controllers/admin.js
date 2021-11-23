@@ -144,13 +144,13 @@ exports.allPhonesForUser = async (req, res) => {
 */
 exports.editPhone = async (req, res) => {
   const query =
-    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE imei = ?";
+    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE software_id = ?";
   const params = [
     req.body.name,
     req.body.phone_num,
     req.body.tracking_state,
     req.body.stolen_state,
-    req.body.imei,
+    req.body.software_id,
   ];
 
   let isAdmin = req.user.account_type === 1;
@@ -174,8 +174,8 @@ exports.editPhone = async (req, res) => {
   Deletes a phone for any user
 */
 exports.deletePhone = async (req, res) => {
-  const query = "DELETE FROM phone WHERE imei = ?";
-  const params = [req.body.imei];
+  const query = "DELETE FROM phone WHERE software_id = ?";
+  const params = [req.body.software_id];
 
   let isAdmin = req.user.account_type === 1;
 

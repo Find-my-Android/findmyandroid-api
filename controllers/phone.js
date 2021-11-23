@@ -22,12 +22,12 @@ exports.allPhones = async (req, res) => {
 };
 
 /*
-  Route: /phone/get/:imei
-  Selects a phone for the logged in user with an IMEI.
+  Route: /phone/get/:software_id
+  Selects a phone for the logged in user with a software_id.
 */
 exports.getPhone = async (req, res) => {
-  const query = "SELECT * FROM phone WHERE imei = ? and user_id = ?";
-  const params = [req.params.imei, req.user.user_id];
+  const query = "SELECT * FROM phone WHERE software_id = ? and user_id = ?";
+  const params = [req.params.software_id, req.user.user_id];
 
   return new Promise((resolve, reject) => {
     connection.query(query, params, (error, results) => {
@@ -47,8 +47,8 @@ exports.getPhone = async (req, res) => {
   Deletes a phone for the logged in user
 */
 exports.deletePhone = async (req, res) => {
-  const query = "DELETE phone WHERE imei = ? AND user_id = ?";
-  const params = [req.body.imei, req.user.user_id];
+  const query = "DELETE phone WHERE software_id = ? AND user_id = ?";
+  const params = [req.body.software_id, req.user.user_id];
 
   connection.query(query, params, (error, results) => {
     if (error) {
@@ -66,13 +66,13 @@ exports.deletePhone = async (req, res) => {
 */
 exports.editPhone = async (req, res) => {
   const query =
-    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE imei = ? and user_id = ?";
+    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE software_id = ? and user_id = ?";
   const params = [
     req.body.name,
     req.body.phone_num,
     req.body.tracking_state,
     req.body.stolen_state,
-    req.body.imei,
+    req.body.software_id,
     req.user.user_id,
   ];
 
@@ -92,11 +92,11 @@ exports.editPhone = async (req, res) => {
 */
 exports.trackPhone = async (req, res) => {
   const query =
-    "UPDATE phone SET latitude = ?, longitude = ?, last_tracked = NOW(), WHERE imei = ? and user_id = ?";
+    "UPDATE phone SET latitude = ?, longitude = ?, last_tracked = NOW(), WHERE software_id = ? and user_id = ?";
   const params = [
     req.body.latitude,
     req.body.longitude,
-    req.body.imei,
+    req.body.software_id,
     req.user.user_id,
   ];
 
@@ -117,7 +117,7 @@ exports.trackPhone = async (req, res) => {
 exports.createPhone = async (req, res) => {
   const query = "INSERT INTO phone VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
   const params = [
-    req.body.imei,
+    req.body.software_id,
     req.user.user_id,
     req.body.name,
     req.body.phone_num,
