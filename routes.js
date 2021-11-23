@@ -6,6 +6,8 @@ const authenticateToken = require("./middleware/authenticateJWT");
 const user = require("./controllers/user");
 router.post("/user/signup", user.create);
 router.post("/user/login", user.login);
+router.post("/user/forgotpassword", user.forgotPassword);
+router.patch("/user/resetpassword", authenticateToken, user.resetPassword);
 router.patch("/user/edit", authenticateToken, user.edit);
 router.get("/user", authenticateToken, user.get);
 

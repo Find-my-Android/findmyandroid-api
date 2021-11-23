@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const nodemailer = require("nodemailer");
 const connection = require("../connection");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -146,6 +147,10 @@ exports.get = async (req, res) => {
   });
 };
 
+/*
+  Route: /user/edit
+  Updates User on user_id, with changing of password.
+*/
 exports.edit = async (req, res) => {
   const query =
     "UPDATE user SET first_name = ?, last_name = ?, email = ?, primary_num = ?, secondary_num = ?, password = ? WHERE user_id = ?";
@@ -158,11 +163,100 @@ exports.edit = async (req, res) => {
     req.body.email,
     req.body.primary_num,
     req.body.secondary_num,
-    req.user.user_id,
     password,
+    req.user.user_id,
   ];
 
-  //Updates User on user_id, with changing of password.
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.log(error);
+    }
+    res.send({
+      ok: true,
+    });
+  });
+};
+
+/*
+  Route: /user/forgotpassword
+  Sends an email to the user with a link to reset their password
+*/
+exports.forgotPassword = async (req, res) => {
+  let email = req.body.email;
+  let userExists = await checkIfUserExists(email);
+  if (userExists) {
+    //Get the user_id and account_type
+    const query = "SELECT user_id, account_type FROM user WHERE email = ?";
+    const params = [email];
+
+    let userData = await new Promise((resolve, reject) => {
+      //Query the database with the query
+      connection.query(query, params, (error, results) => {
+        if (results.length == 0) {
+          return reject();
+        } else {
+          return resolve(results[0]);
+        }
+      });
+    });
+
+    if (!userData.user_id) {
+      return res.status(401).send("Couldn't get user_id");
+    }
+
+    //generate jwt
+    let jwt = generateJWT(
+      {
+        user_id: userData.user_id,
+        email: email,
+        account_type: userData.account_type,
+      },
+      "Website"
+    );
+
+    //send email
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: JSON.parse(fs.readFileSync("emailCredentials.json", "utf8")),
+    });
+    let mailOptions = {
+      from: JSON.parse(fs.readFileSync("emailCredentials.json", "utf8")).email,
+      to: email,
+      subject: "FMyA Password Reset",
+      html:
+        "<h1>FMyA Password Reset</h1>" +
+        "<p>Click the link below to reset your password. This link will expire in 1 hour<p/>" +
+        "<p><a href='https://fmya.duckdns.org/resetpassword/" +
+        jwt +
+        "'>Reset password</a></p>",
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+        res.send({
+          ok: true,
+        });
+      }
+    });
+  } else {
+    //A user doesn't exist so return an error
+    res.status(400).send("User Doesn't Exist!");
+  }
+};
+
+/*
+  Route: /user/resetpassword
+  Updates a user's password
+*/
+exports.resetPassword = async (req, res) => {
+  const query = "UPDATE user SET password = ? WHERE user_id = ?";
+  let password = await bcrypt.hash(req.body.password, saltRounds);
+
+  const params = [password, req.user.user_id];
+
   connection.query(query, params, (error, results) => {
     if (error) {
       console.log(error);
