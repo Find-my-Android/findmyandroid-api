@@ -121,11 +121,11 @@ exports.createPhone = async (req, res) => {
     req.user.user_id,
     req.body.name,
     req.body.phone_num,
-    0,
-    0,
-    0,
-    0,
-    0,
+    -1, //latitude
+    -1, //longitude
+    1, //tracking_state
+    0, //stolen_state
+    0, //sim_removed
   ];
 
   //Connect to the database and run the query
