@@ -16,7 +16,7 @@ const phone = require("./controllers/phone");
 router.post("/phone/create", authenticateToken, phone.createPhone);
 router.delete("/phone/delete", authenticateToken, phone.deletePhone);
 router.patch("/phone/edit", authenticateToken, phone.editPhone);
-router.patch("phone/track", authenticateToken, phone.trackPhone);
+router.patch("/phone/track", authenticateToken, phone.trackPhone);
 router.get("/phone/all", authenticateToken, phone.allPhones);
 router.get("/phone/get/:software_id", authenticateToken, phone.getPhone);
 

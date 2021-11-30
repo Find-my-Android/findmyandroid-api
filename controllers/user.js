@@ -214,23 +214,35 @@ exports.forgotPassword = async (req, res) => {
       "Website"
     );
 
-    //send email
+    let htmlFile = await new Promise((resolve, reject) => {
+      fs.readFile(
+        "./emails/resetpassword.html",
+        { encoding: "utf-8" },
+        (err, data) => {
+          if (err) {
+            return reject();
+          } else {
+            return resolve(data.replace("$jwt$", jwt));
+          }
+        }
+      );
+    });
+
+    //Generate email file
     let transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: JSON.parse(fs.readFileSync("emailCredentials.json", "utf8")),
     });
     let mailOptions = {
       from: JSON.parse(fs.readFileSync("emailCredentials.json", "utf8")).email,
       to: email,
       subject: "FMyA Password Reset",
-      html:
-        "<h1>FMyA Password Reset</h1>" +
-        "<p>Click the link below to reset your password. This link will expire in 1 hour<p/>" +
-        "<p><a href='https://fmya.duckdns.org/resetpassword/" +
-        jwt +
-        "'>Reset password</a></p>",
+      html: htmlFile,
     };
 
+    //Send the email
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
