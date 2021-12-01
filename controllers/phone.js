@@ -47,7 +47,7 @@ exports.getPhone = async (req, res) => {
   Deletes a phone for the logged in user
 */
 exports.deletePhone = async (req, res) => {
-  const query = "DELETE phone WHERE software_id = ? AND user_id = ?";
+  const query = "DELETE FROM phone WHERE software_id = ? AND user_id = ?";
   const params = [req.body.software_id, req.user.user_id];
 
   connection.query(query, params, (error, results) => {
