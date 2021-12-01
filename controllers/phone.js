@@ -66,10 +66,9 @@ exports.deletePhone = async (req, res) => {
 */
 exports.editPhone = async (req, res) => {
   const query =
-    "UPDATE phone SET name = ?, phone_num = ?, tracking_state = ?, stolen_state = ? WHERE software_id = ? and user_id = ?";
+    "UPDATE phone SET name = ?, tracking_state = ?, stolen_state = ? WHERE software_id = ? and user_id = ?";
   const params = [
     req.body.name,
-    req.body.phone_num,
     req.body.tracking_state,
     req.body.stolen_state,
     req.body.software_id,
