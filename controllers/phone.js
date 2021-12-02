@@ -91,7 +91,7 @@ exports.editPhone = async (req, res) => {
 */
 exports.trackPhone = async (req, res) => {
   const query =
-    "UPDATE phone SET latitude = ?, longitude = ?, last_tracked = NOW(), WHERE software_id = ? and user_id = ?";
+    "UPDATE phone SET latitude = ?, longitude = ?, last_tracked = NOW() WHERE software_id = ? and user_id = ?";
   const params = [
     req.body.latitude,
     req.body.longitude,
